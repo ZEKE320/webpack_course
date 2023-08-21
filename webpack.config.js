@@ -1,76 +1,58 @@
-const path = require('path');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+/* eslint-env node */
 
+const path = require("path");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+/** @type {import("webpack").Configuration} */
 module.exports = {
-  mode: 'production',
-  // devtool: 'eval-source-map',
-  entry: {
-    main: './src/javascripts/main.js',
-  },
+  mode: "production",
+  devtool: "source-map",
+  entry: "./src/js/main.js",
   output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: 'javascripts/[name]-[contenthash].js',
-    publicPath: '/',
+    path: path.resolve(__dirname, "./dist"),
+    filename: "./js/main.js",
+    publicPath: "/",
+    clean: true,
   },
   module: {
     rules: [
       {
-        test: /\.(ts|tsx)$/,
+        test: /\.ts(x?)$/i,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'ts-loader',
-          },
-        ],
+        use: [{ loader: "ts-loader" }],
       },
       {
-        test: /\.(js|jsx)/,
+        test: /\.js(x?)$/i,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                ['@babel/preset-env', { "targets": "> 0.25%, not dead" }],
-                '@babel/preset-react',
-              ],
-            },
-          },
-        ],
+        use: [{ loader: "babel-loader" }],
       },
       {
-        test: /\.(css|scss|sass)$/,
+        test: /\.(css|sass|scss)$/i,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
           },
           {
-            loader: 'css-loader',
-            options: { sourceMap: true },
+            loader: "css-loader",
           },
           {
-            loader: 'sass-loader',
+            loader: "postcss-loader",
+          },
+          {
+            loader: "sass-loader",
           },
         ],
       },
       {
-        test: /\.png|\.jpg/,
-        type: 'asset/resource',
+        test: /\.(png|jpg|jpeg|gif|svg)$/i,
+        type: "asset/resource",
         generator: {
-          filename: 'images/[name]-[contenthash][ext]',
+          filename: "./img/[name][ext]",
         },
         use: [
-          // {
-          //   loader: 'file-loader',
-          //   options: {
-          //     esModule: false,
-          //     name: 'images/[name].[ext]',
-          //   },
-          // },
           {
-            loader: 'image-webpack-loader',
+            loader: "image-webpack-loader",
             options: {
               mozjpeg: {
                 progressive: true,
@@ -81,13 +63,13 @@ module.exports = {
         ],
       },
       {
-        test: /\.pug/,
+        test: /\.pug$/i,
         use: [
           {
-            loader: 'html-loader',
+            loader: "html-loader",
           },
           {
-            loader: 'pug-html-loader',
+            loader: "pug-html-loader",
             options: {
               pretty: true,
             },
@@ -98,20 +80,19 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: './stylesheets/[name]-[contenthash].css',
+      filename: "./css/main.css",
     }),
     new HtmlWebpackPlugin({
-      template: './src/templates/index.pug',
-      filename: 'index.html',
+      template: "./src/template/index.pug",
+      filename: "./index.html",
     }),
     new HtmlWebpackPlugin({
-      template: './src/templates/access.pug',
-      filename: 'access.html',
+      template: "./src/template/access.pug",
+      filename: "./access.html",
     }),
     new HtmlWebpackPlugin({
-      template: './src/templates/members/taro.pug',
-      filename: 'members/taro.html',
+      template: "./src/template/members/taro.pug",
+      filename: "./members/taro.html",
     }),
-    new CleanWebpackPlugin(),
   ],
 };
